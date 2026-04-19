@@ -77,8 +77,8 @@ describe('BankAccount', () => {
 
   test('should throw SynchronizationFailedError if fetchBalance returned null', async () => {
     (random as jest.Mock).mockReturnValueOnce(10).mockReturnValueOnce(0);
-    expect(() => account.synchronizeBalance()).rejects.toThrow(
-      new SynchronizationFailedError(),
+    await expect(account.synchronizeBalance()).rejects.toThrow(
+      SynchronizationFailedError,
     );
   });
 });

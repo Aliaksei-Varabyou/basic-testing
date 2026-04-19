@@ -3,54 +3,69 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { doStuffByTimeout, doStuffByInterval, readFileAsynchronously } from '.';
 
-const callback = jest.fn();
 const interval = 1000;
 
 describe('doStuffByTimeout', () => {
-  beforeAll(() => {
+  beforeEach(() => {
     jest.useFakeTimers();
   });
 
-  afterAll(() => {
+  afterEach(() => {
+    jest.clearAllTimers();
+    jest.restoreAllMocks();
     jest.useRealTimers();
   });
 
   test('should set timeout with provided callback and timeout', () => {
+    const callback = jest.fn();
     const spyTimeout = jest.spyOn(global, 'setTimeout');
+
     doStuffByTimeout(callback, interval);
+
     expect(spyTimeout).toHaveBeenCalledTimes(1);
     expect(spyTimeout).toHaveBeenCalledWith(callback, interval);
   });
 
   test('should call callback only after timeout', () => {
+    const callback = jest.fn();
+
     doStuffByTimeout(callback, interval);
+
     expect(callback).not.toHaveBeenCalled();
     jest.advanceTimersByTime(interval);
-    expect(callback).toHaveBeenCalled();
+    expect(callback).toHaveBeenCalledTimes(1);
   });
 });
 
 describe('doStuffByInterval', () => {
-  beforeAll(() => {
+  beforeEach(() => {
     jest.useFakeTimers();
   });
 
-  afterAll(() => {
+  afterEach(() => {
+    jest.clearAllTimers();
+    jest.restoreAllMocks();
     jest.useRealTimers();
   });
 
   test('should set interval with provided callback and timeout', () => {
+    const callback = jest.fn();
     const spyInterval = jest.spyOn(global, 'setInterval');
+
     doStuffByInterval(callback, interval);
+
     expect(spyInterval).toHaveBeenCalledTimes(1);
     expect(spyInterval).toHaveBeenCalledWith(callback, interval);
   });
 
   test('should call callback multiple times after multiple intervals', () => {
+    const callback = jest.fn();
+
     doStuffByInterval(callback, interval);
+
     expect(callback).not.toHaveBeenCalled();
-    jest.advanceTimersByTime(interval);
-    expect(callback).toHaveBeenCalled();
+    jest.advanceTimersByTime(interval * 3);
+    expect(callback).toHaveBeenCalledTimes(3);
   });
 });
 

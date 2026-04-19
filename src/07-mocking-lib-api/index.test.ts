@@ -23,10 +23,9 @@ describe('throttledGetDataFromApi', () => {
   });
 
   test('should create instance with provided base url', async () => {
-    const baseUrl = 'https://jsonplaceholder.typicode.com';
-    await throttledGetDataFromApi(baseUrl);
+    await throttledGetDataFromApi(relativePath);
     expect(mockedAxios.create).toHaveBeenCalledWith({
-      baseURL: baseUrl,
+      baseURL: 'https://jsonplaceholder.typicode.com',
     });
   });
 
